@@ -1,0 +1,39 @@
+class Solution {
+public:
+    bool checkInclusion(string s1, string s2) {
+        if (s1.size() > s2.size()) return false;
+
+        int count1[26] = {0};
+        int count2[26] = {0};
+
+        for (int i = 0; i < s1.size(); i++) {
+            count1[s1[i] - 'a']++;
+            count2[s2[i] - 'a']++;
+        }
+
+        if (count1 == count2) return true; // direct array comparison won't work, use memcmp or matches
+
+        int matches = 0;
+        for (int i = 0; i < 26; i++) {
+            if (count1[i] == count2[i]) matches++;
+        }
+
+        int k = s1.size();
+
+        for (int right = k; right < s2.size(); right++) {
+            if (matches == 26) return true;
+
+            int add = s2[right] - 'a';
+            count2[add]++;
+            if (count1[add] == count2[add]) matches++;
+            else if (count1[add] + 1 == count2[add]) matches--;
+
+            int remove = s2[right - k] - 'a';
+            count2[remove]--;
+            if (count1[remove] == count2[remove]) matches++;
+            else if (count1[remove] - 1 == count2[remove]) matches--;
+        }
+
+        return matches == 26;
+    }
+};

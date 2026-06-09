@@ -1,0 +1,39 @@
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        vector<int> result;
+        if (s.size() < p.size()) return result;
+
+        int countP[26] = {0};
+        int countS[26] = {0};
+        int k = p.size();
+
+        for (int i = 0; i < k; i++) {
+            countP[p[i] - 'a']++;
+            countS[s[i] - 'a']++;
+        }
+
+        int matches = 0;
+        for (int i = 0; i < 26; i++) {
+            if (countP[i] == countS[i]) matches++;
+        }
+
+        for (int right = k; right < s.size(); right++) {
+            if (matches == 26) result.push_back(right - k);
+
+            int add = s[right] - 'a';
+            countS[add]++;
+            if (countP[add] == countS[add]) matches++;
+            else if (countP[add] + 1 == countS[add]) matches--;
+
+            int remove = s[right - k] - 'a';
+            countS[remove]--;
+            if (countP[remove] == countS[remove]) matches++;
+            else if (countP[remove] - 1 == countS[remove]) matches--;
+        }
+
+        if (matches == 26) result.push_back(s.size() - k);
+
+        return result;
+    }
+};
